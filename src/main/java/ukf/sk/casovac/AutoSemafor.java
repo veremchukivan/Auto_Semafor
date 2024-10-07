@@ -1,68 +1,122 @@
 package ukf.sk.casovac;
 
+import com.sun.tools.javac.Main;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
 
 public class AutoSemafor extends Canvas {
     private int stav;
-    GraphicsContext gc;
+    private GraphicsContext gc;
+    private boolean isAutomatic;
 
     public AutoSemafor() {
-        // Збільшимо розмір канви
-        super(100, 250);
+        super(200, 250);
         gc = this.getGraphicsContext2D();
         stav = 0;
         vykresli();
+        this.setOnMouseClicked(e -> {
+            if (!this.isAutomatic) {
+                zmenastavu();
+            }
+        });
     }
 
     public void zmenastavu() {
-        stav = (stav + 1) % 3;  // Перемикаємо стан
+        switch (stav) {
+            case 0:
+                stav = 1;
+                break;
+            case 1:
+                stav = 2;
+                break;
+            case 2:
+                stav = 3;
+                break;
+            case 3:
+                stav = 0;
+                break;
+        }
         vykresli();
     }
 
     public void vykresli() {
-        gc.clearRect(0, 0, getWidth(), getHeight());  // Очищуємо канву перед малюванням
-
-        // Малюємо корпус світлофора
+        gc.clearRect(0, 0, getWidth(), getHeight());
         gc.setFill(Color.DARKSLATEGRAY);
-        gc.setEffect(new DropShadow(10, Color.BLACK));  // Тінь для корпусу
-        gc.fillRoundRect(20, 20, 60, 180, 20, 20);  // Центруємо корпус
-
-        gc.setEffect(null);  // Видаляємо ефект тіні після малювання корпусу
-
-        // Малюємо місця для трьох лампочок
+        gc.setEffect(new DropShadow(10, Color.BLACK));
+        gc.fillRoundRect(20, 20, 60, 180, 20, 20);
+        gc.setFill(Color.DARKSLATEGRAY);
+        gc.fillRoundRect(120, 20, 60, 120, 20, 20);
+        gc.setEffect(null);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-        gc.strokeOval(30, 30, 40, 40);  // Червона лампочка
-        gc.strokeOval(30, 90, 40, 40);  // Жовта лампочка
-        gc.strokeOval(30, 150, 40, 40); // Зелена лампочка
+        gc.strokeOval(30, 30, 40, 40);
+        gc.strokeOval(30, 90, 40, 40);
+        gc.strokeOval(30, 150, 40, 40);
+        gc.strokeOval(130, 30, 40, 40);
+        gc.strokeOval(130, 90, 40, 40);
 
-        // Логіка перемикання ламп через switch-case
         switch (stav) {
-            case 0:  // Червоне світло
-                drawLight(gc, 30, 30, Color.RED);
+            case 0:
+                gc.setFill(Color.RED);
+                gc.fillOval(30, 30, 40, 40);
+                drawHumanGreen(150, 30);
+                drawHumanGray(150, 90);
                 break;
-            case 1:  // Жовте світло
-                drawLight(gc, 30, 90, Color.ORANGE);
+            case 1:
+                gc.setFill(Color.RED);
+                gc.fillOval(30, 30, 40, 40);
+                gc.setFill(Color.ORANGE);
+                gc.fillOval(30, 90, 40, 40);
+                drawHumanRed(150, 30);
+                drawHumanGray(150, 90);
                 break;
-            case 2:  // Зелене світло
-                drawLight(gc, 30, 150, Color.GREEN);
+            case 2:
+                gc.setFill(Color.GREEN);
+                gc.fillOval(30, 150, 40, 40);
+                drawHumanGray(150, 30);
+                drawHumanGreen(150, 90);
+                break;
+            case 3:
+                gc.setFill(Color.ORANGE);
+                gc.fillOval(30, 90, 40, 40);
+                drawHumanRed(150, 30);
+                drawHumanGray(150, 90);
                 break;
         }
     }
 
-    // Метод для малювання лампочки з градієнтом
-    private void drawLight(GraphicsContext gc, int x, int y, Color color) {
-        RadialGradient gradient = new RadialGradient(
-                0, 0.1, x + 20, y + 20, 20, false,
-                javafx.scene.paint.CycleMethod.NO_CYCLE,
-                new Stop(0, Color.WHITE), new Stop(1, color)
-        );
-        gc.setFill(gradient);
-        gc.fillOval(x, y, 40, 40);
+    private void drawHumanRed(double x, double y) {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(2);
+        gc.strokeOval(x - 5, y + 10, 10, 10);
+        gc.strokeLine(x, y + 20, x, y + 30);
+        gc.strokeLine(x, y + 23, x - 5, y + 28);
+        gc.strokeLine(x, y + 23, x + 5, y + 28);
+        gc.strokeLine(x, y + 30, x - 3, y + 35);
+        gc.strokeLine(x, y + 30, x + 3, y + 35);
+    }
+
+    private void drawHumanGreen(double x, double y) {
+        gc.setStroke(Color.GREEN);
+        gc.setLineWidth(2);
+        gc.strokeOval(x - 5, y + 10, 10, 10);
+        gc.strokeLine(x, y + 20, x, y + 30);
+        gc.strokeLine(x, y + 23, x - 5, y + 28);
+        gc.strokeLine(x, y + 23, x + 5, y + 28);
+        gc.strokeLine(x, y + 30, x - 3, y + 35);
+        gc.strokeLine(x, y + 30, x + 3, y + 35);
+    }
+
+    private void drawHumanGray(double x, double y) {
+        gc.setStroke(Color.DARKGRAY);
+        gc.setLineWidth(1);
+        gc.strokeOval(x - 5, y + 10, 10, 10);
+        gc.strokeLine(x, y + 20, x, y + 30);
+        gc.strokeLine(x, y + 23, x - 5, y + 28);
+        gc.strokeLine(x, y + 23, x + 5, y + 28);
+        gc.strokeLine(x, y + 30, x - 3, y + 35);
+        gc.strokeLine(x, y + 30, x + 3, y + 35);
     }
 }

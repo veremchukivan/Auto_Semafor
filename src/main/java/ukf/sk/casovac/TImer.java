@@ -2,7 +2,7 @@ package ukf.sk.casovac;
 
 import javafx.animation.AnimationTimer;
 
-public class TImer  extends AnimationTimer {
+public class TImer extends AnimationTimer {
     AutoSemafor AS;
     int point;
 
@@ -12,9 +12,8 @@ public class TImer  extends AnimationTimer {
     }
 
     @Override
-    public void handle(long now)
-    {
-        point=(point+1)%60;
-        if(point==0) AS.zmenastavu();
+    public void handle(long now) {
+        point = (point + 1) % 60;
+        if (point == 0) AS.zmenastavu();
     }
 }
