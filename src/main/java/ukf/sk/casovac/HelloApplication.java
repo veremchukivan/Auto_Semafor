@@ -23,6 +23,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) {
         AutoSemafor s = new AutoSemafor();
+        timer = new TImer(s);
 
         VBox root = new VBox(10);
         HBox buttons = new HBox(10);
@@ -41,18 +42,19 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        timer = new TImer(s);
-        timer.start();
+
+
     }
 
     private void switchToManual(AutoSemafor s) {
         isAutomatic = false;
         timer.stop();
-        s.zmenastavu();
+        s.setAutomaticMode(false);
     }
 
     private void switchToAutomatic(AutoSemafor s) {
         isAutomatic = true;
         timer.start();
+        s.setAutomaticMode(true);
     }
 }

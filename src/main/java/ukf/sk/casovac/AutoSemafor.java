@@ -22,6 +22,9 @@ public class AutoSemafor extends Canvas {
             }
         });
     }
+    public void setAutomaticMode(boolean isAutomatic) {
+        this.isAutomatic = isAutomatic;
+    }
 
     public void zmenastavu() {
         switch (stav) {
@@ -61,8 +64,8 @@ public class AutoSemafor extends Canvas {
             case 0:
                 gc.setFill(Color.RED);
                 gc.fillOval(30, 30, 40, 40);
-                drawHumanGreen(150, 30);
-                drawHumanGray(150, 90);
+                drawHumanGray(150, 30);
+                drawHumanGreen(150, 90);
                 break;
             case 1:
                 gc.setFill(Color.RED);
@@ -75,8 +78,8 @@ public class AutoSemafor extends Canvas {
             case 2:
                 gc.setFill(Color.GREEN);
                 gc.fillOval(30, 150, 40, 40);
-                drawHumanGray(150, 30);
-                drawHumanGreen(150, 90);
+                drawHumanRed(150, 30);
+                drawHumanGray(150, 90);
                 break;
             case 3:
                 gc.setFill(Color.ORANGE);
